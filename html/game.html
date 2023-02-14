@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/game.js"></script>
+    <title>Pt1UF3 Attila</title>
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body>
+    <div class="container">
+        <canvas id="myCanvas" width="1200" height="700" style="background: url('../images/wall3.webp');"></canvas>
+        <img id="homer" src="../images/homer.png" style="display: none;">
+        <img id="donut" src="../images/donut.png" style="display: none;">
+        <img id="obstacle" src="../images/bloque.png" style="display: none;">
+        
+        <nav>
+            <ul>
+                <li><button>Reset</button></li>
+                <li>
+                    <h1 id="timer"></h1>
+                </li>
+                <li><button>Instructions</button></li>
+                <li><button class="players">Single Player</button></li>
+                <li><button class="players">Two Players</button></li>
+                <li><button id="audioButton">Reproducir</button></li>
+            </ul>
+        </nav>
+        <audio id="audio" controls loop  src="../audio/Monkeys-Spinning-Monkeys.mp3"></audio>
+    </div>
+</body>
+
+</html>
