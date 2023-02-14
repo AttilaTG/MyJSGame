@@ -9,6 +9,9 @@ window.onload = function () {
     var donuts = document.getElementById("donut");
     var obstacle = document.getElementById("obstacle");
     var timer = document.getElementById("timer");
+    var resetGame = document.getElementById("resetGame");
+    var audio = document.getElementById("audio");
+    var audioButton = document.getElementById("audioButton");
 
     var player = new Player();
     var board = new Board(player);
@@ -20,20 +23,10 @@ window.onload = function () {
         board.playerWins();
     }
 
-    var audio = document.getElementById("audio");
-    var audioButton = document.getElementById("audioButton");
-audioButton.addEventListener("click", pauseOrResumeAudio)
+    resetGame.addEventListener("click", resetGameFunction);
 
-function pauseOrResumeAudio() {
-    if (audio.paused) {
-        audio.play();
-        audioButton.textContent = "Pausar";
-    } else {
-        audio.pause();
-        audioButton.textContent = "Reproducir";
-    }
-}
-    
+    audioButton.addEventListener("click", pauseOrResumeAudio);
+
 }
 
 
@@ -308,6 +301,20 @@ function startTimer() {
 
 function stopTimer() {
     clearInterval(timerId);
+}
+
+function pauseOrResumeAudio() {
+    if (audio.paused) {
+        audio.play();
+        audioButton.textContent = "Pausar";
+    } else {
+        audio.pause();
+        audioButton.textContent = "Reproducir";
+    }
+}
+
+function resetGameFunction(){
+    location.reload();
 }
 
 
