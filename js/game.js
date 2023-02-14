@@ -12,6 +12,15 @@ window.onload = function () {
     var resetGame = document.getElementById("resetGame");
     var audio = document.getElementById("audio");
     var audioButton = document.getElementById("audioButton");
+    var numberOfPlayersURL = window.location.href;
+    var url = new URL(numberOfPlayersURL);
+    var numberOfPLayers = url.searchParams.get("players")
+    console.log(numberOfPLayers)
+
+    /*
+    - Falta alternar entre un jugador o dos al crear las clases
+    - Falta retocar css y estilos
+    */
 
     var player = new Player();
     var board = new Board(player);

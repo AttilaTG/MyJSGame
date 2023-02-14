@@ -36,7 +36,16 @@ body {
     font-size: 2em ;
 }
 
-#btn-inicio{
+#player{
+    margin: 0 auto;
+    background-color: cornflowerblue;
+    color: white;
+    font-size: 2em;
+    padding: 1em 2em;
+    border-radius: 25px;
+}
+
+#startGame{
     margin: 0 auto;
     background-color: red;
     color: white;
