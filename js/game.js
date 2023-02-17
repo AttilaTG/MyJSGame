@@ -6,6 +6,7 @@ window.onload = function () {
     var canvas = document.getElementById("myCanvas");
     var context = canvas.getContext("2d");
     var player1 = document.getElementById("homer");
+    var player2 = document.getElementById("homer2");
     var donuts = document.getElementById("donut");
     var obstacle = document.getElementById("obstacle");
     var timer = document.getElementById("timer");
@@ -14,7 +15,7 @@ window.onload = function () {
     var audioButton = document.getElementById("audioButton");
     var numberOfPlayersURL = window.location.href;
     var url = new URL(numberOfPlayersURL);
-    var numberOfPLayers = url.searchParams.get("players")
+    var numberOfPLayers = url.searchParams.get("players");
 
     /*
     - Falta alternar entre un jugador o dos al crear las clases
@@ -22,12 +23,31 @@ window.onload = function () {
     */
 
     var player = new Player(player1);
-    var board = new Board(player);
+    if (numberOfPLayers == "2"){
+        var player2 = new Player(player2);
+        var board = new Board(player, player2);
+        board.showBoard(context, obstacle, donuts, player, player2);
+    } else {
+        var board = new Board(player);
+        board.showBoard(context, obstacle, donuts, player);
+    }
+    
 
     board.showBoard(context, obstacle, donuts, player);
     window.addEventListener("keydown", move);
     function move(e) {
-        board.movePlayer(e, context, player)
+        //new
+        e = e || window.event;
+
+         if((e.key == 'ArrowUp')||(e.key == 'ArrowDown')||(e.key == 'ArrowLeft')||(e.key == 'ArrowRight')){
+            board.movePlayer(e, context, player);
+         } 
+        if((player2 != undefined)&&((e.key == 'w')||(e.key == 'a')||(e.key == 's')||(e.key == 'd'))) {
+            board.movePlayer(e, context, player2)
+         }
+
+        //old
+        //board.movePlayer(e, context, player)
         board.playerWins();
     }
 
@@ -59,7 +79,8 @@ class Player {
     constructor(playerImage) {
         this.#playerImage = playerImage;
         this.#collectedObjects = 0;
-        var randomPlayerPosition = Math.floor((Math.random() * 4) + 1);
+        /*
+        var randomPlayerPosition = Math.floor((Math.random() * 4) + 1); //esto da errores
         switch (randomPlayerPosition) {
             case 1:
                 this.#positionX = 0;
@@ -79,6 +100,7 @@ class Player {
                 this.#positionY = maxHeight - 1;
                 break;
         }
+        */
     }
 
     get collectedObjects() {
@@ -120,19 +142,28 @@ class Player {
 class Board {
     #cells;
     #totalDonuts;
-    constructor(jugador) {
+    constructor(jugador, ...args) {
+        var jugador2;
+        if (args.length == 1){
+            jugador2 = args[0];
+        }
         this.#totalDonuts = 0;
 
         var cellsArrayHeight = new Array();
         for (let i = 0; i < maxWidth; i++) {
             var cellsArrayWidth = new Array();
             for (let j = 0; j < maxHeight; j++) {
-
                 var state = 0;
                 var randomBoardCell = Math.floor((Math.random() * 20) + 1);
-
-                if (jugador.positionX == i && jugador.positionY == j) {
+                
+                if (i == 0 && j == 0) {
+                    jugador.positionX = 0
+                    jugador.positionY = 0
                     state = 3
+                } else if ((jugador2 != undefined) && (maxWidth - 1 == i && maxHeight - 1== j)) {
+                    jugador2.positionX = maxWidth -1;
+                    jugador2.positionY = maxHeight-1;
+                    state = 4
                 } else if (randomBoardCell >= 15) {
                     var randomCellState = Math.floor((Math.random() * 10) + 1);
                     if (randomCellState % 2 == 0) {
@@ -141,7 +172,6 @@ class Board {
                     else {
                         state = 2;
                         this.#totalDonuts++;
-                        console.log(this.#totalDonuts)
                     }
                 } else {
                     state = 0;
@@ -184,8 +214,11 @@ class Board {
         }
     }
 
-
-    showBoard(context, obstacle, donut, playerObject) {
+    showBoard(context, obstacle, donut, playerObject, ...args) {
+        var playerObj2; // aqui falla algo
+        if (args.length == 1){
+            playerObj2 = args[0];
+        }
         for (let cellRow = 0; cellRow < this.cells.length; cellRow++) {
             for (let cellColumn = 0; cellColumn < this.cells[cellRow].length; cellColumn++) {
 
@@ -198,9 +231,11 @@ class Board {
                 } else if (cellType == 2) {
                     context.drawImage(donut, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels)
                 } else if (cellType == 3) {
-                    playerObject.positionX = cellPositionX;
-                    playerObject.positionY = cellPositionY;
+                    
                     context.drawImage(playerObject.playerImage, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels);
+                }
+                else if (cellType == 4) {
+                    context.drawImage(playerObj2.playerImage, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels); //aqui en concreto ????
                 }
             }
 
@@ -213,19 +248,19 @@ class Board {
 
         var playerPosX = playerObject.positionX;
         var playerPosY = playerObject.positionY;
-        var currentCells = this.cells;
-        context.clearRect(playerPosX * amountOfPixels, playerPosY * amountOfPixels, 100, 100);
         var newPosition;
-        if ((e.key == 'ArrowUp') && (playerPosY - 1 >= 0)) {
+        context.clearRect(playerPosX * amountOfPixels, playerPosY * amountOfPixels, 100, 100);
+        
+        if ((e.key == 'ArrowUp' || (e.key == 'w')) && (playerPosY - 1 >= 0)) {
             newPosition = playerPosY - 1;
             movePlayerWhenIsNotObstacle(playerObject, playerPosX, newPosition, this);
-        } else if ((e.key == 'ArrowDown') && (playerPosY + 1 < maxHeight)) {
+        } else if ((e.key == 'ArrowDown' ||(e.key == 's')) && (playerPosY + 1 < maxHeight)) {
             newPosition = playerPosY + 1
             movePlayerWhenIsNotObstacle(playerObject, playerPosX, newPosition, this);
-        } else if ((e.key == 'ArrowLeft') && (playerPosX - 1 >= 0)) {
+        } else if ((e.key == 'ArrowLeft' ||(e.key == 'a')) && (playerPosX - 1 >= 0)) {
             newPosition = playerPosX - 1
             movePlayerWhenIsNotObstacle(playerObject, newPosition, playerPosY, this);
-        } else if ((e.key == 'ArrowRight') && (playerPosX + 1 < maxWidth)) {
+        } else if ((e.key == 'ArrowRight'||(e.key == 'd')) && (playerPosX + 1 < maxWidth)) {
             newPosition = playerPosX + 1
             movePlayerWhenIsNotObstacle(playerObject, newPosition, playerPosY, this);
         }
@@ -238,6 +273,7 @@ Posbile types:
 Obstacle = 1
 Donut = 2
 Player = 3
+Player 2 = 4
 */
 class Cell {
     #state
