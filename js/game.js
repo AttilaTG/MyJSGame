@@ -22,13 +22,13 @@ window.onload = function () {
     - Falta retocar css y estilos
     */
 
-    var player = new Player();
+    var player = new Player(player1Image);
     var board = new Board(player);
 
-    board.showBoard(context, obstacle, donuts, player1Image, player);
+    board.showBoard(context, obstacle, donuts,player);
     window.addEventListener("keydown", move);
     function move(e) {
-        board.movePlayer(e, context, player1Image, player)
+        board.movePlayer(e, context, player)
         board.playerWins();
     }
 
@@ -56,7 +56,9 @@ class Player {
     #collectedObjects;
     #positionX;
     #positionY;
-    constructor() { //posible mejora -> añadir nombre
+    #playerImage;
+    constructor(playerImage) { //posible mejora -> añadir nombre
+        this.#playerImage = playerImage;
         this.#collectedObjects = 0;
         var randomPlayerPosition = Math.floor((Math.random() * 4) + 1);
         switch (randomPlayerPosition) {
@@ -98,6 +100,11 @@ class Player {
     set positionY(newPosY) {
         this.#positionY = newPosY;
     }
+
+    get playerImage(){
+        return this.#playerImage;
+    }
+    
 
     collectedNewDonut() {
         this.collectedObjects++;
@@ -173,7 +180,7 @@ class Board {
     }
 
 
-    showBoard(context, obstacle, donut, playerImage, playerObject) {
+    showBoard(context, obstacle, donut, playerObject) {
         for (let cellRow = 0; cellRow < this.cells.length; cellRow++) {
             for (let cellColumn = 0; cellColumn < this.cells[cellRow].length; cellColumn++) {
 
@@ -188,7 +195,7 @@ class Board {
                 } else if (cellType == 3) {
                     playerObject.positionX = cellPositionX;
                     playerObject.positionY = cellPositionY;
-                    context.drawImage(playerImage, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels);
+                    context.drawImage(playerObject.playerImage, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels);
                 }
             }
 
@@ -196,7 +203,7 @@ class Board {
         startTimer();
     }
 
-    movePlayer(e, context, playerImage, playerObject) {
+    movePlayer(e, context, playerObject) {
         e = e || window.event;
 
         var playerPosX = playerObject.positionX;
@@ -257,7 +264,7 @@ class Board {
             }
 
         }
-        context.drawImage(playerImage, playerPosX * amountOfPixels, playerPosY * amountOfPixels);
+        context.drawImage(playerObject.playerImage, playerPosX * amountOfPixels, playerPosY * amountOfPixels);
     }
 
 }
