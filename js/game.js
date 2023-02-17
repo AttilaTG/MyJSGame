@@ -5,7 +5,7 @@ var gameTime;
 window.onload = function () {
     var canvas = document.getElementById("myCanvas");
     var context = canvas.getContext("2d");
-    var player1Image = document.getElementById("homer");
+    var player1 = document.getElementById("homer");
     var donuts = document.getElementById("donut");
     var obstacle = document.getElementById("obstacle");
     var timer = document.getElementById("timer");
@@ -22,7 +22,7 @@ window.onload = function () {
     - Falta retocar css y estilos
     */
 
-    var player = new Player(player1Image);
+    var player = new Player(player1);
     var board = new Board(player);
 
     board.showBoard(context, obstacle, donuts,player);
