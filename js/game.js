@@ -18,9 +18,10 @@ window.onload = function () {
     var numberOfPlayersURL = window.location.href;
     var url = new URL(numberOfPlayersURL);
     var numberOfPLayers = url.searchParams.get("players");
+    var winMessageField = document.getElementById("celebrationMessageField");
 
     /*
-    - Falta alternar entre un jugador o dos al crear las clases
+    - falta retocar div de ganar etc
     - Falta retocar css y estilos
     */
 
@@ -44,20 +45,34 @@ window.onload = function () {
         //new
         e = e || window.event;
 
-         if((e.key == 'ArrowUp')||(e.key == 'ArrowDown')||(e.key == 'ArrowLeft')||(e.key == 'ArrowRight')){
+        if((e.key == 'ArrowUp')||(e.key == 'ArrowDown')||(e.key == 'ArrowLeft')||(e.key == 'ArrowRight')){
             board.movePlayer(e, context, player1);
-         } 
+        } 
         if((player2 != undefined)&&((e.key == 'w')||(e.key == 'a')||(e.key == 's')||(e.key == 'd'))) {
             board.movePlayer(e, context, player2)
             
-         }
-         player1Donuts.innerHTML = "Donuts: " + player1.collectedObjects;
+        }
+
+        player1Donuts.innerHTML = "Donuts: " + player1.collectedObjects;
         if (player2 != undefined) {
-        player2Donuts.innerHTML = "Donuts: " + player2.collectedObjects;
-    }
-        //old
-        //board.movePlayer(e, context, player)
-        board.playerWins();
+            player2Donuts.innerHTML = "Donuts: " + player2.collectedObjects;
+        }
+        if (board.playerWins()) {
+            winMessageField.style.display = "block";
+            var winMessage = document.getElementById('celebrationMessage');
+            if (player2 != undefined) {
+                if (player1.collectedObjects > player2.collectedObjects){
+                    winMessage.style.innerHTML = "Jugador 1 has ganado con estos donuts:" + player1.collectedObjects;
+                } else if (player1.collectedObjects < player2.collectedObjects){
+                    winMessage.style.innerHTML = "Jugador 2 has ganado con estos donuts:" + player2.collectedObjects;
+                } else {
+                    winMessage.style.innerHTML = "Haberis empatado!"
+                }
+            } else{
+                winMessage.style.innerHTML = "Has ganado!";
+            }
+        }
+        
     }
 
     
@@ -70,14 +85,6 @@ window.onload = function () {
 
 
 
-/*
-Clases:
-- Jugador
-- Tablero
-- Donut
-- Obstaculo
-*/
-
 const amountOfPixels = 100;
 const maxWidth = 12;
 const maxHeight = 7;
@@ -87,31 +94,10 @@ class Player {
     #positionX;
     #positionY;
     #playerImage;
+    #playerId;
     constructor(playerImage) {
         this.#playerImage = playerImage;
         this.#collectedObjects = 0;
-        /*
-        var randomPlayerPosition = Math.floor((Math.random() * 4) + 1); //esto da errores
-        switch (randomPlayerPosition) {
-            case 1:
-                this.#positionX = 0;
-                this.#positionY = 0;
-                break;
-            case 2:
-                this.#positionX = 0;
-                this.#positionY = maxHeight - 1;
-                break;
-            case 3:
-                this.#positionX = maxWidth - 1;
-                this.#positionY = 0;
-                break;
-
-            case 4:
-                this.#positionX = maxWidth - 1;
-                this.#positionY = maxHeight - 1;
-                break;
-        }
-        */
     }
 
     get collectedObjects() {
@@ -135,6 +121,13 @@ class Player {
 
     get playerImage() {
         return this.#playerImage;
+    }
+
+    get playerId(){
+        return this.#playerId;
+    }
+    set playerId(id){
+        this.#playerId = id;
     }
 
     collectedNewDonut() {
@@ -162,10 +155,12 @@ class Board {
                 if (i == 0 && j == 0) {
                     jugador.positionX = 0
                     jugador.positionY = 0
+                    jugador.playerId = 3;
                     state = 3
                 } else if ((jugador2 != undefined) && (maxWidth - 1 == i && maxHeight - 1 == j)) {
                     jugador2.positionX = maxWidth -1;
                     jugador2.positionY = maxHeight-1;
+                    jugador2.playerId = 4;
                     state = 4
                 } else if (randomBoardCell >= 15) {
                     var randomCellState = Math.floor((Math.random() * 10) + 1);
@@ -212,13 +207,13 @@ class Board {
 
     playerWins() {
         if (this.totalDonuts == 0) {
-            alert("Has  ganado!")
-            stopTimer();
+            return true;
         }
+        return false;
     }
 
     showBoard(context, obstacle, donut, player1, ...args) {
-        var player2; // aqui falla algo
+        var player2; 
         if (args.length == 1){
             player2 = args[0];
         }
@@ -234,7 +229,6 @@ class Board {
                 } else if (cellType == 2) {
                     context.drawImage(donut, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels)
                 } else if (cellType == 3) {
-                    
                     context.drawImage(player1.playerImage, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels);
                 }
                 else if (cellType == 4) {
@@ -252,20 +246,25 @@ class Board {
         var playerPosX = playerObject.positionX;
         var playerPosY = playerObject.positionY;
         var newPosition;
+        var currentCells = this.cells;
         context.clearRect(playerPosX * amountOfPixels, playerPosY * amountOfPixels, 100, 100);
         
-        if ((e.key == 'ArrowUp' || (e.key == 'w')) && (playerPosY - 1 >= 0)) {
+        if ((e.key == 'ArrowUp' || (e.key == 'w')) && (playerPosY - 1 >= 0) && !isObstacle(currentCells, playerPosX, playerPosY - 1)) {
             newPosition = playerPosY - 1;
-            movePlayerWhenIsNotObstacle(playerObject, playerPosX, newPosition, this);
-        } else if ((e.key == 'ArrowDown' || (e.key == 's')) && (playerPosY + 1 < maxHeight)) {
+            this.cells[playerPosX][playerPosY].state = 0;
+            movePlayerAndCollectIfDonut(playerObject, playerPosX, newPosition, this);
+        } else if ((e.key == 'ArrowDown' || (e.key == 's')) && (playerPosY + 1 < maxHeight) && !isObstacle(currentCells, playerPosX, playerPosY + 1)) {
             newPosition = playerPosY + 1
-            movePlayerWhenIsNotObstacle(playerObject, playerPosX, newPosition, this);
-        } else if ((e.key == 'ArrowLeft' ||(e.key == 'a')) && (playerPosX - 1 >= 0)) {
+            this.cells[playerPosX][playerPosY].state = 0;
+            movePlayerAndCollectIfDonut(playerObject, playerPosX, newPosition, this);
+        } else if ((e.key == 'ArrowLeft' ||(e.key == 'a')) && (playerPosX - 1 >= 0) && !isObstacle(currentCells, playerPosX - 1, playerPosY)) {
             newPosition = playerPosX - 1
-            movePlayerWhenIsNotObstacle(playerObject, newPosition, playerPosY, this);
-        } else if ((e.key == 'ArrowRight'||(e.key == 'd')) && (playerPosX + 1 < maxWidth)) {
+            this.cells[playerPosX][playerPosY].state = 0;
+            movePlayerAndCollectIfDonut(playerObject, newPosition, playerPosY, this);
+        } else if ((e.key == 'ArrowRight'||(e.key == 'd')) && (playerPosX + 1 < maxWidth) && !isObstacle(currentCells, playerPosX + 1, playerPosY)) {
             newPosition = playerPosX + 1
-            movePlayerWhenIsNotObstacle(playerObject, newPosition, playerPosY, this);
+            this.cells[playerPosX][playerPosY].state = 0;
+            movePlayerAndCollectIfDonut(playerObject, newPosition, playerPosY, this);
         }
         context.drawImage(playerObject.playerImage, playerObject.positionX * amountOfPixels, playerObject.positionY * amountOfPixels);
     }
@@ -297,25 +296,23 @@ class Cell {
 
 //functions
 
-function movePlayerWhenIsNotObstacle(playerObject, positionX, positionY, boardObject) {
+function movePlayerAndCollectIfDonut(playerObject, positionX, positionY, boardObject) {
     var currentCells = boardObject.cells;
-    if (!isObstacle(currentCells, positionX, positionY)) {
-        if (isDonut(currentCells, positionX, positionY)) {
-            currentCells[positionX][positionY].state = 0;
-            playerObject.collectedNewDonut();
-            console.log(playerObject.collectedObjects)
-            boardObject.minusOneDount();
-        }
-        playerObject.positionX = positionX;
-        playerObject.positionY = positionY;
+    if (isDonut(currentCells, positionX, positionY)) {
+        playerObject.collectedNewDonut();
+        boardObject.minusOneDount();
     }
+    currentCells[positionX][positionY].state = playerObject.playerId;
+    playerObject.positionX = positionX;
+    playerObject.positionY = positionY;
 }
 
 function isObstacle(currentCells, playerPosX, playerPosY) {
-    if (currentCells[playerPosX][playerPosY].state == 1) {
-        return true;
+    var playerPositionState = currentCells[playerPosX][playerPosY].state;
+    if (playerPositionState == 2 || playerPositionState == 0) {
+        return false;
     }
-    return false;
+    return true;
 }
 
 function isDonut(currentCells, playerPosX, playerPosY) {

@@ -21,15 +21,18 @@
         <nav>
             <ul>
                 <li><button id="resetGame">Reset</button></li>
-                <li><h1 id="player1Donuts"></h1></li>
+                <li><h1 id="player1Donuts">Donuts: 0</h1></li>
                 <li>
                     <h1 id="timer"></h1>
                 </li>
-                <li><h1 id="player2Donuts"></h1></li>
+                <li><h1 id="player2Donuts">Donuts: 0</h1></li>
                 <li><button id="audioButton">Reproducir</button></li>
             </ul>
         </nav>
-        <audio id="audio" controls loop  src="../audio/Monkeys-Spinning-Monkeys.mp3"></audio>
+        <audio id="audio" loop  src="../audio/Monkeys-Spinning-Monkeys.mp3"></audio>
+        <div id="celebrationMessageField" style="display: none; padding: 10px;" >
+            <h1 id="celebrationMessage"></h1>
+        </div>
     </div>
 </body>
 
