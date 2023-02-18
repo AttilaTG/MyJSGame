@@ -5,8 +5,10 @@ var gameTime;
 window.onload = function () {
     var canvas = document.getElementById("myCanvas");
     var context = canvas.getContext("2d");
-    var player1 = document.getElementById("homer");
-    var player2 = document.getElementById("homer2");
+    var player1Image = document.getElementById("homer");
+    var player2Image = document.getElementById("homer2");
+    var player1Donuts = document.getElementById("player1Donuts");
+    var player2Donuts = document.getElementById("player2Donuts");
     var donuts = document.getElementById("donut");
     var obstacle = document.getElementById("obstacle");
     var timer = document.getElementById("timer");
@@ -22,34 +24,43 @@ window.onload = function () {
     - Falta retocar css y estilos
     */
 
-    var player = new Player(player1);
+    var player1 = new Player(player1Image);
     if (numberOfPLayers == "2"){
-        var player2 = new Player(player2);
-        var board = new Board(player, player2);
-        board.showBoard(context, obstacle, donuts, player, player2);
+        var player2 = new Player(player2Image);
+        var board = new Board(player1, player2);
+        board.showBoard(context, obstacle, donuts, player1, player2);
+    } else if(numberOfPLayers == "1") {
+        var board = new Board(player1);
+        board.showBoard(context, obstacle, donuts, player1);
     } else {
-        var board = new Board(player);
-        board.showBoard(context, obstacle, donuts, player);
+        alert("No intentes manipular la URL!")
+        window.location.replace('../index.html');        
     }
     
 
-    board.showBoard(context, obstacle, donuts, player);
+    //board.showBoard(context, obstacle, donuts, player);
     window.addEventListener("keydown", move);
     function move(e) {
         //new
         e = e || window.event;
 
          if((e.key == 'ArrowUp')||(e.key == 'ArrowDown')||(e.key == 'ArrowLeft')||(e.key == 'ArrowRight')){
-            board.movePlayer(e, context, player);
+            board.movePlayer(e, context, player1);
          } 
         if((player2 != undefined)&&((e.key == 'w')||(e.key == 'a')||(e.key == 's')||(e.key == 'd'))) {
             board.movePlayer(e, context, player2)
+            
          }
-
+         player1Donuts.innerHTML = "Donuts: " + player1.collectedObjects;
+        if (player2 != undefined) {
+        player2Donuts.innerHTML = "Donuts: " + player2.collectedObjects;
+    }
         //old
         //board.movePlayer(e, context, player)
         board.playerWins();
     }
+
+    
 
     resetGame.addEventListener("click", resetGameFunction);
 
@@ -118,25 +129,17 @@ class Player {
     get positionY() {
         return this.#positionY;
     }
-    set positionY(newPosY) {
-        this.#positionY = newPosY;
+    set positionY(newPositionY) {
+        this.#positionY = newPositionY;
     }
 
     get playerImage() {
         return this.#playerImage;
     }
 
-
     collectedNewDonut() {
         this.collectedObjects++;
     }
-
-    movePlayer(newPositionX, newPositionY) {
-        this.positionX = newPositionX
-        this.positionY = newPositionY
-    }
-
-
 }
 
 class Board {
@@ -160,7 +163,7 @@ class Board {
                     jugador.positionX = 0
                     jugador.positionY = 0
                     state = 3
-                } else if ((jugador2 != undefined) && (maxWidth - 1 == i && maxHeight - 1== j)) {
+                } else if ((jugador2 != undefined) && (maxWidth - 1 == i && maxHeight - 1 == j)) {
                     jugador2.positionX = maxWidth -1;
                     jugador2.positionY = maxHeight-1;
                     state = 4
@@ -214,10 +217,10 @@ class Board {
         }
     }
 
-    showBoard(context, obstacle, donut, playerObject, ...args) {
-        var playerObj2; // aqui falla algo
+    showBoard(context, obstacle, donut, player1, ...args) {
+        var player2; // aqui falla algo
         if (args.length == 1){
-            playerObj2 = args[0];
+            player2 = args[0];
         }
         for (let cellRow = 0; cellRow < this.cells.length; cellRow++) {
             for (let cellColumn = 0; cellColumn < this.cells[cellRow].length; cellColumn++) {
@@ -232,10 +235,10 @@ class Board {
                     context.drawImage(donut, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels)
                 } else if (cellType == 3) {
                     
-                    context.drawImage(playerObject.playerImage, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels);
+                    context.drawImage(player1.playerImage, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels);
                 }
                 else if (cellType == 4) {
-                    context.drawImage(playerObj2.playerImage, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels); //aqui en concreto ????
+                    context.drawImage(player2.playerImage, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels); //aqui en concreto ????
                 }
             }
 
@@ -254,7 +257,7 @@ class Board {
         if ((e.key == 'ArrowUp' || (e.key == 'w')) && (playerPosY - 1 >= 0)) {
             newPosition = playerPosY - 1;
             movePlayerWhenIsNotObstacle(playerObject, playerPosX, newPosition, this);
-        } else if ((e.key == 'ArrowDown' ||(e.key == 's')) && (playerPosY + 1 < maxHeight)) {
+        } else if ((e.key == 'ArrowDown' || (e.key == 's')) && (playerPosY + 1 < maxHeight)) {
             newPosition = playerPosY + 1
             movePlayerWhenIsNotObstacle(playerObject, playerPosX, newPosition, this);
         } else if ((e.key == 'ArrowLeft' ||(e.key == 'a')) && (playerPosX - 1 >= 0)) {
@@ -300,8 +303,8 @@ function movePlayerWhenIsNotObstacle(playerObject, positionX, positionY, boardOb
         if (isDonut(currentCells, positionX, positionY)) {
             currentCells[positionX][positionY].state = 0;
             playerObject.collectedNewDonut();
+            console.log(playerObject.collectedObjects)
             boardObject.minusOneDount();
-            console.log(boardObject.totalDonuts)
         }
         playerObject.positionX = positionX;
         playerObject.positionY = positionY;
