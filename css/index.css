@@ -58,6 +58,7 @@ margin: 0 auto;
 }
 
 #celebrationMessageField{
+    background-color: white;
     display: none; 
     padding: 10px;
     justify-content: center;

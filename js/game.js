@@ -56,7 +56,7 @@ window.onload = function () {
                 if (player1.collectedObjects > player2.collectedObjects){
                     winMessage.innerHTML = "Jugador 1 has ganado con " + player1.collectedObjects + " donuts" ;
                 } else if (player1.collectedObjects < player2.collectedObjects){
-                    winMessage.innerHTML = "Jugador 2 has ganado con "+ player2.collectedObjects +" donuts";
+                    winMessage.innerHTML = "¡¡Jugador 2 has ganado con "+ player2.collectedObjects +" donuts!!";
                 } else {
                     winMessage.innerHTML = "¡Habeis empatado!"
                 }
@@ -223,7 +223,7 @@ class Board {
                     context.drawImage(player1.playerImage, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels);
                 }
                 else if (cellType == 4) {
-                    context.drawImage(player2.playerImage, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels); //aqui en concreto ????
+                    context.drawImage(player2.playerImage, cellPositionX * amountOfPixels, cellPositionY * amountOfPixels); 
                 }
             }
 
