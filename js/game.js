@@ -338,7 +338,7 @@ function pauseOrResumeAudio() {
 }
 
 function resetGameFunction() {
-    location.reload();
+    window.location.replace('../index.html');
 }
 
 
