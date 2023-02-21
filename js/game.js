@@ -61,7 +61,7 @@ window.onload = function () {
                     winMessage.innerHTML = "¡Habeis empatado!"
                 }
             } else{
-                winMessage.innerHTML = "Has ganado!";
+                winMessage.innerHTML = "¡Has ganado!";
             }
         }
         
