@@ -339,10 +339,10 @@ function stopTimer() {
 function pauseOrResumeAudio() {
     if (audio.paused) {
         audio.play();
-        audioButton.textContent = "Pausar";
+        audioButton.textContent = "Music ON";
     } else {
         audio.pause();
-        audioButton.textContent = "Reproducir";
+        audioButton.textContent = "Music OFF";
     }
 }
 

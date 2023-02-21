@@ -1,4 +1,4 @@
-var player = document.getElementById("player");
+var player = document.getElementById("playerNum");
 var playerMode = document.getElementById("playerModeText");
 var numberOfPLayers = 1;
 player.addEventListener("click", changePlayers);

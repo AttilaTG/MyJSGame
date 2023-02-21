@@ -1,5 +1,5 @@
 body {
-    background-image: url("../images/wall.jpg");
+    background-image: url("../images/sky.jpg");
 }
 
 .container{
@@ -10,48 +10,47 @@ body {
 }
 
 #indexContainer{
-    background-color: blanchedalmond;
+    background-color:  white;
     border-radius: 5px;
+    text-align: justify;
 }
 
 #indexContainer h1 {
     text-decoration: underline;
     text-align: center;
-    color: black;
-    font-size: 4em;
+    color: red;
+    font-size: 2em;
     
 }
 
 #indexContainer h2 {
     text-decoration: underline;
-    text-align: center;
-    color: black;
-    font-size: 3em;
-    
+    font-size: 1.5em;
 }
 
 #indexContainer h3 {
-    text-align: center;
-    color: black;
-    font-size: 2em ;
+    font-size: 1em ;
 }
 
-#player{
+#playerModeText {
+    color: cornflowerblue;
+    text-align: center;
+}
+
+.indexButtons {
     margin: 0 auto;
-    background-color: cornflowerblue;
     color: white;
-    font-size: 2em;
-    padding: 1em 2em;
+    font-size: 1em;
+    padding: 1em 1em;
     border-radius: 25px;
+}
+
+#playerNum{
+    background-color: cornflowerblue;
 }
 
 #startGame{
-    margin: 0 auto;
     background-color: red;
-    color: white;
-    font-size: 2em;
-    padding: 1em 2em;
-    border-radius: 25px;
 }
 
 canvas {
@@ -61,9 +60,9 @@ margin: 0 auto;
 nav ul{
     border-radius: 25px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    background-color: lightgray;
+    background-color: white;
     padding: 10px;
     text-align: center;
 }
@@ -72,10 +71,11 @@ nav li {
     display: inline;
 }
 nav button {
-    background-color: white;
+    background-color: pink;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
+    font-size: 2em;
 }
 
   
