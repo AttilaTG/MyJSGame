@@ -60,6 +60,8 @@ margin: 0 auto;
 #celebrationMessageField{
     background-color: white;
     display: none; 
+    margin: 10px;
+    border-radius: 25px;
     padding: 10px;
     justify-content: center;
     text-align: center;
