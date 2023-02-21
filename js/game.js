@@ -20,11 +20,6 @@ window.onload = function () {
     var numberOfPLayers = url.searchParams.get("players");
     var winMessageField = document.getElementById("celebrationMessageField");
 
-    /*
-    - falta retocar div de ganar etc
-    - Falta retocar css y estilos
-    */
-
     var player1 = new Player(player1Image);
     if (numberOfPLayers == "2"){
         var player2 = new Player(player2Image);
@@ -38,11 +33,8 @@ window.onload = function () {
         window.location.replace('../index.html');        
     }
     
-
-    //board.showBoard(context, obstacle, donuts, player);
     window.addEventListener("keydown", move);
     function move(e) {
-        //new
         e = e || window.event;
 
         if((e.key == 'ArrowUp')||(e.key == 'ArrowDown')||(e.key == 'ArrowLeft')||(e.key == 'ArrowRight')){
@@ -62,20 +54,18 @@ window.onload = function () {
             var winMessage = document.getElementById('celebrationMessage');
             if (player2 != undefined) {
                 if (player1.collectedObjects > player2.collectedObjects){
-                    winMessage.style.innerHTML = "Jugador 1 has ganado con estos donuts:" + player1.collectedObjects;
+                    winMessage.innerHTML = "Jugador 1 has ganado con " + player1.collectedObjects + " donuts" ;
                 } else if (player1.collectedObjects < player2.collectedObjects){
-                    winMessage.style.innerHTML = "Jugador 2 has ganado con estos donuts:" + player2.collectedObjects;
+                    winMessage.innerHTML = "Jugador 2 has ganado con "+ player2.collectedObjects +" donuts";
                 } else {
-                    winMessage.style.innerHTML = "Haberis empatado!"
+                    winMessage.innerHTML = "¡Habeis empatado!"
                 }
             } else{
-                winMessage.style.innerHTML = "Has ganado!";
+                winMessage.innerHTML = "Has ganado!";
             }
         }
         
     }
-
-    
 
     resetGame.addEventListener("click", resetGameFunction);
 
@@ -207,6 +197,7 @@ class Board {
 
     playerWins() {
         if (this.totalDonuts == 0) {
+            stopTimer();
             return true;
         }
         return false;
