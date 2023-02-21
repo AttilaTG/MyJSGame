@@ -54,7 +54,7 @@ window.onload = function () {
             var winMessage = document.getElementById('celebrationMessage');
             if (player2 != undefined) {
                 if (player1.collectedObjects > player2.collectedObjects){
-                    winMessage.innerHTML = "Jugador 1 has ganado con " + player1.collectedObjects + " donuts" ;
+                    winMessage.innerHTML = "¡¡Jugador 1 has ganado con " + player1.collectedObjects + " donuts!!" ;
                 } else if (player1.collectedObjects < player2.collectedObjects){
                     winMessage.innerHTML = "¡¡Jugador 2 has ganado con "+ player2.collectedObjects +" donuts!!";
                 } else {
